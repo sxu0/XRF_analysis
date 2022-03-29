@@ -22,7 +22,7 @@ def fit_points(x_data, y_data, func, guess):
 
 
 def read_data(filename):
-    with open(filename, 'r') as file:
+    with open(filename, "r") as file:
         line_no = 0
         for line in file:
             line_no += 1
@@ -33,14 +33,16 @@ def read_data(filename):
         footer_rows += line_no
         # print("header_rows:", header_rows)
         # print("footer_rows:", footer_rows)
-    return np.genfromtxt(filename, dtype=int, skip_header=header_rows, skip_footer=footer_rows)
+    return np.genfromtxt(
+        filename, dtype=int, skip_header=header_rows, skip_footer=footer_rows
+    )
 
 
 if __name__ == "__main__":
 
     output_path = Path.cwd() / "outputs"
 
-    pb210_data = read_data("data" / "20220317_take01_Pb210_1523count.csv")
+    pb210_data = read_data(Path.cwd() / "data" / "20220317_take01_Pb210_1523count.csv")
     # print(len(pb210_data))
     channels = np.arange(0, 2048)
 
@@ -189,4 +191,40 @@ if __name__ == "__main__":
     plt.close()
 
     ## test Pb-210 calibration curve on Cs-137
+    cs137_data = read_data(Path.cwd() / "data" / "20220323_take03_Cs137.csv")
+    # print(len(cs137_data))
 
+    cs137_peak1_fit, cs137_peak1_err = fit_points(
+        channels[11:19], cs137_data[11:19], gaussian, [425, 14, 2]
+    )
+    cs137_peak1_fit_x = np.arange(11 - 5, 19 + 5)
+    cs137_peak1_fit_y = gaussian(
+        cs137_peak1_fit_x, cs137_peak1_fit[0], cs137_peak1_fit[1], cs137_peak1_fit[2]
+    )
+    cs137_peak1_centroid = round(cs137_peak1_fit[1], 2)
+    plt.figure()
+    plt.plot(channels[11:19], cs137_data[11:19], "x", label="data")
+    plt.plot(cs137_peak1_fit_x, cs137_peak1_fit_y, label="fit")
+    plt.title("Cs-137 peak centred around channel " + str(cs137_peak1_centroid))
+    plt.xlabel("Channel")
+    plt.ylabel("Count")
+    plt.text(
+        175,
+        385,
+        "centroid:   " + str(cs137_peak1_centroid),
+        ha="center",
+        va="center",
+        transform=None,
+    )
+    plt.legend()
+    # plt.savefig(output_path / "20220323_cs137_peak1.png")
+    plt.close()
+
+    ## energy of Cs-137 peak calculated from Pb-210 calibration curve
+    print(
+        "Cs-137 channel "
+        + str(cs137_peak1_centroid)
+        + " energy:\t"
+        + str(round(line(cs137_peak1_centroid, calib_fit[0], calib_fit[1]), 4))
+        + " keV"
+    )
