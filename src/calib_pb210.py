@@ -1,3 +1,4 @@
+from email import header
 from pathlib import Path
 
 import numpy as np
@@ -21,14 +22,26 @@ def fit_points(x_data, y_data, func, guess):
 
 
 def read_data(filename):
-    return np.genfromtxt(filename, dtype=int, skip_header=12, skip_footer=73)
+    with open(filename, 'r') as file:
+        line_no = 0
+        for line in file:
+            line_no += 1
+            if line == "<<DATA>>\n":
+                header_rows = line_no
+            if line == "<<END>>\n":
+                footer_rows = -line_no + 1
+        footer_rows += line_no
+        # print("header_rows:", header_rows)
+        # print("footer_rows:", footer_rows)
+    return np.genfromtxt(filename, dtype=int, skip_header=header_rows, skip_footer=footer_rows)
 
 
 if __name__ == "__main__":
 
     output_path = Path.cwd() / "outputs"
 
-    pb210_data = read_data("data//20220317_take01_Pb210_1523count.csv")
+    pb210_data = read_data("data" / "20220317_take01_Pb210_1523count.csv")
+    # print(len(pb210_data))
     channels = np.arange(0, 2048)
 
     ## Pb-210 peak 1
@@ -174,3 +187,6 @@ if __name__ == "__main__":
     )
     # plt.savefig(output_path / "20220317_pb210_calib_curve.png")
     plt.close()
+
+    ## test Pb-210 calibration curve on Cs-137
+
