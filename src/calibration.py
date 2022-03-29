@@ -29,11 +29,11 @@ if __name__ == "__main__":
     pb210_data = read_data("data//20220317_take01_Pb210_1523count.csv")
     channels = np.arange(0, 2048)
 
+    ## peak 1
     pb210_peak1_fit, pb210_peak1_err = fit_points(channels[850:882], pb210_data[850:882], gaussian, [34, 866, 20])
-    pb210_peak1_fit_x = np.arange(800, 933)
+    pb210_peak1_fit_x = np.arange(800, 932)
     pb210_peak1_fit_y = gaussian(pb210_peak1_fit_x, pb210_peak1_fit[0], pb210_peak1_fit[1], pb210_peak1_fit[2])
     pb210_peak1_centroid = round(pb210_peak1_fit[1], 2)
-
     plt.figure()
     plt.plot(channels[850:882], pb210_data[850:882], 'x', label="data")
     plt.plot(pb210_peak1_fit_x, pb210_peak1_fit_y, label="fit")
@@ -42,7 +42,53 @@ if __name__ == "__main__":
     plt.ylabel("Count")
     plt.text(175, 385, "centroid:   " + str(pb210_peak1_centroid), ha='center', va='center', transform=None)
     plt.legend()
-    plt.savefig(output_path / "20220317_pb210_peak1.png")
+    # plt.savefig(output_path / "20220317_pb210_peak1.png")
+
+    ## peak 2
+    pb210_peak2_fit, pb210_peak2_err = fit_points(channels[998:1023], pb210_data[998:1023], gaussian, [10, 1010, 11])
+    pb210_peak2_fit_x = np.arange(998-50, 1023+50)
+    pb210_peak2_fit_y = gaussian(pb210_peak2_fit_x, pb210_peak2_fit[0], pb210_peak2_fit[1], pb210_peak2_fit[2])
+    pb210_peak2_centroid = round(pb210_peak2_fit[1], 2)
+    plt.figure()
+    plt.plot(channels[998:1023], pb210_data[998:1023], 'x', label="data")
+    plt.plot(pb210_peak2_fit_x, pb210_peak2_fit_y, label="fit")
+    plt.title("Pb-210 peak centred around channel " + str(pb210_peak2_centroid))
+    plt.xlabel("Channel")
+    plt.ylabel("Count")
+    plt.text(175, 385, "centroid:   " + str(pb210_peak2_centroid), ha='center', va='center', transform=None)
+    plt.legend()
+    # plt.savefig(output_path / "20220317_pb210_peak2.png")
+
+    ## peak 3
+    pb210_peak3_fit, pb210_peak3_err = fit_points(channels[1024:1068], pb210_data[1024:1068], gaussian, [18, 1046, 22])
+    pb210_peak3_fit_x = np.arange(1024-50, 1068+50)
+    pb210_peak3_fit_y = gaussian(pb210_peak3_fit_x, pb210_peak3_fit[0], pb210_peak3_fit[1], pb210_peak3_fit[2])
+    pb210_peak3_centroid = round(pb210_peak3_fit[1], 2)
+    plt.figure()
+    plt.plot(channels[1024:1068], pb210_data[1024:1068], 'x', label="data")
+    plt.plot(pb210_peak3_fit_x, pb210_peak3_fit_y, label="fit")
+    plt.title("Pb-210 peak centred around channel " + str(pb210_peak3_centroid))
+    plt.xlabel("Channel")
+    plt.ylabel("Count")
+    plt.text(175, 385, "centroid:   " + str(pb210_peak3_centroid), ha='center', va='center', transform=None)
+    plt.legend()
+    # plt.savefig(output_path / "20220317_pb210_peak3.png")
+
+    ## peak 4
+    pb210_peak4_fit, pb210_peak4_err = fit_points(channels[1236:1260], pb210_data[1236:1260], gaussian, [6, 1248, 6])
+    pb210_peak4_fit_x = np.arange(1236-25, 1260+25)
+    pb210_peak4_fit_y = gaussian(pb210_peak4_fit_x, pb210_peak4_fit[0], pb210_peak4_fit[1], pb210_peak4_fit[2])
+    pb210_peak4_centroid = round(pb210_peak4_fit[1], 2)
+    plt.figure()
+    plt.plot(channels[1236:1260], pb210_data[1236:1260], 'x', label="data")
+    plt.plot(pb210_peak4_fit_x, pb210_peak4_fit_y, label="fit")
+    plt.title("Pb-210 peak centred around channel " + str(pb210_peak4_centroid))
+    plt.xlabel("Channel")
+    plt.ylabel("Count")
+    plt.text(175, 385, "centroid:   " + str(pb210_peak4_centroid), ha='center', va='center', transform=None)
+    plt.legend()
+    # plt.savefig(output_path / "20220317_pb210_peak4.png")
+
 
     # peak_channels = np.array([866, 1010, 1046, 1247])
     # test_energies = np.array([10.555, 12.305, 12.618, 15.222])
