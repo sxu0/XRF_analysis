@@ -8,7 +8,7 @@ Author: Shiqi Xu
 """
 
 from pathlib import Path
-from typing import Union, List
+from typing import Tuple, List, Callable
 
 import numpy as np
 import pandas as pd
@@ -25,14 +25,14 @@ def line(x: np.ndarray, slope: float, intercept: float):
 
 
 def fit_points(
-    x_data: np.ndarray, y_data: np.ndarray, func: function, guess: List[float]
-):
+    x_data: np.ndarray, y_data: np.ndarray, func: Callable, guess: List[float]
+) -> Tuple[np.ndarray, np.ndarray]:
     fitted, err_cov = curve_fit(func, x_data, y_data, p0=guess)
 
     return fitted, err_cov
 
 
-def read_data(filename: Path):
+def read_data(filename: Path) -> np.ndarray:
     """Reads FastSDD data in csv format, and returns a numpy array.
 
     Args:
@@ -66,7 +66,7 @@ def fit_peak(
     sample: str,
     save_fig: bool = False,
     path_save: Path = None,
-):
+) -> Tuple[np.ndarray, np.ndarray]:
     """Fits a Gaussian to an energy peak, and calculates the peak centre.
     Produces a plot.
 
@@ -129,7 +129,7 @@ def calib_curve(
     sample: str,
     save_fig: bool = False,
     path_save: Path = None,
-):
+) -> Tuple[np.ndarray, np.ndarray]:
     """Produce a calibration curve given peak locations and test known energies from literature.
 
     Args:
