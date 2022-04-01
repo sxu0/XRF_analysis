@@ -78,6 +78,9 @@ def fit_peak(
         sample (str): Name of sample. Used in plot title.
         save_fig (bool, optional): Whether to save output plot. Defaults to False.
         path_save (Path, optional): Path to save output plot. Defaults to None.
+    
+    Returns:
+        (array, 2D array): Fit parameters and error covariance of fit.
     """
     channels = np.arange(0, len(counts))
     peak_fit, fit_err = fit_points(
@@ -115,6 +118,8 @@ def fit_peak(
         plt.close()
     else:
         plt.show()
+    
+    return peak_fit, fit_err
 
 
 def calib_curve(
@@ -134,6 +139,9 @@ def calib_curve(
         sample (str): Name of sample used for calibration. Used in plot title.
         save_fig (bool, optional): Whether to save output plot. Defaults to False.
         path_save (Path, optional): Path to save output plot. Defaults to None.
+    
+    Returns:
+        (array, 2D array): Linear fit parameters and error covariance of fit.
     """
     calib_fit, calib_err = fit_points(peak_centres, energies, line, guess)
     fit_x = np.arange()
@@ -161,3 +169,5 @@ def calib_curve(
         plt.close()
     else:
         plt.show()
+    
+    return calib_fit, calib_err
