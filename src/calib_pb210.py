@@ -1,4 +1,3 @@
-from email import header
 from pathlib import Path
 
 import numpy as np
