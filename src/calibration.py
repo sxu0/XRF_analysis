@@ -8,6 +8,7 @@ Author: Shiqi Xu
 """
 
 from pathlib import Path
+from typing import Union, List
 
 import numpy as np
 import pandas as pd
@@ -46,5 +47,48 @@ def read_data(filename):
     )
 
 
-
-
+def fit_peak(
+    channels: np.ndarray,
+    counts: np.ndarray,
+    first_channel: int,
+    last_channel: int,
+    guess: List[float],
+    sample: str,
+    path_save: Path,
+    save_fig: bool = False,
+):
+    peak_fit, fit_err = fit_points(
+        channels[first_channel:last_channel],
+        counts[first_channel:last_channel],
+        gaussian,
+        guess,
+    )
+    scale = last_channel - first_channel
+    peak_fit_x = np.arange(first_channel - scale / 10, last_channel - scale / 10)
+    peak_fit_y = gaussian(peak_fit_x, peak_fit[0], peak_fit[1], peak_fit[2])
+    peak_centroid = round(peak_fit[1], 2)
+    plt.figure()
+    plt.plot(
+        channels[first_channel:last_channel],
+        counts[first_channel:last_channel],
+        "x",
+        label="data",
+    )
+    plt.plot(peak_fit_x, peak_fit_y, label="fit")
+    plt.title(sample + " peak centred around channel " + str(peak_centroid))
+    plt.xlabel("Channel")
+    plt.ylabel("Count")
+    plt.text(
+        175,
+        385,
+        "centroid:   " + str(peak_centroid),
+        ha="center",
+        va="center",
+        transform=None,
+    )
+    plt.legend()
+    if save_fig:
+        plt.savefig(path_save)
+        plt.close()
+    else:
+        plt.show()
