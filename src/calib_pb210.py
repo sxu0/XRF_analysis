@@ -48,7 +48,7 @@ def read_data(filename):
 
 if __name__ == "__main__":
 
-    output_path = Path.cwd() / "outputs"
+    output_path = Path.cwd() / "outputs" / "early_stuff"
 
     pb210_data = read_data(Path.cwd() / "data" / "20220317_take01_Pb210_1523count.csv")
     # print(len(pb210_data))
