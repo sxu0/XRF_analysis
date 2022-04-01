@@ -1,3 +1,12 @@
+"""
+calib_pb210.py
+
+An early trial of calibration. See `metals.py` for more recent, clearer work.
+
+Author: Shiqi Xu
+"""
+
+
 from pathlib import Path
 
 import numpy as np
