@@ -17,14 +17,14 @@ from xrf import calib
 
 
 ## mode: "default" or "high_rate"
-# mode = "default"
-mode = "high_rate"
+mode = "default"
+# mode = "high_rate"
 
 
 if __name__ == "__main__":
 
     data_path = Path.cwd() / "data"
-    fig_path = Path.cwd() / "outputs"
+    fig_path = Path.cwd() / "outputs" / "calib_radioactive"
 
     SDD_channels = np.arange(0, 2048)
 
@@ -91,6 +91,14 @@ if __name__ == "__main__":
         )
 
         energies_default = calib.line(SDD_channels, pb210_calib_fit[0], pb210_calib_fit[1])
+
+        plt.figure()
+        plt.plot(energies_default, pb210_data, '.', markersize=4)
+        plt.title("Pb-210 Natural Decay, Default FastSDD Setting")
+        plt.xlabel("Energy (keV)")
+        plt.ylabel("Count")
+        plt.savefig(fig_path / "pb210_spectrum.png")
+        plt.close()
         # endregion: calibration of FastSDD Default PX5 setting
 
     elif mode == "high_rate":
@@ -131,5 +139,13 @@ if __name__ == "__main__":
             path_save = fig_path / "calib_fastSDD_high_rate.png",
         )
 
-        energies = calib.line(SDD_channels, cs137_calib_fit[0], cs137_calib_fit[1])
+        energies_high_rate = calib.line(SDD_channels, cs137_calib_fit[0], cs137_calib_fit[1])
+
+        plt.figure()
+        plt.plot(energies_high_rate, cs137_data, '.', markersize=4)
+        plt.title("Cs-137 Natural Decay, High Rate FastSDD Setting")
+        plt.xlabel("Energy (keV)")
+        plt.ylabel("Count")
+        plt.savefig(fig_path / "cs137_spectrum.png")
+        plt.close()
         # endregion: calibration of FastSDD High Rate PX5 setting
