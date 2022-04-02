@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Tuple, List, Callable
 
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+from scipy.stats import chisquare
 
 
 def gaussian(x: np.ndarray, height: float, centre: float, std: float):
@@ -22,14 +22,6 @@ def gaussian(x: np.ndarray, height: float, centre: float, std: float):
 
 def line(x: np.ndarray, slope: float, intercept: float):
     return slope * x + intercept
-
-
-def fit_points(
-    x_data: np.ndarray, y_data: np.ndarray, func: Callable, guess: List[float]
-) -> Tuple[np.ndarray, np.ndarray]:
-    fitted, err_cov = curve_fit(func, x_data, y_data, p0=guess)
-
-    return fitted, err_cov
 
 
 def read_data(filename: Path) -> np.ndarray:
@@ -85,11 +77,11 @@ def fit_peak(
     Returns:
         (array, 2D array): Fit parameters and error covariance of fit.
     """
-    peak_fit, fit_err = fit_points(
+    peak_fit, fit_err = curve_fit(
+        gaussian,
         channels[first_channel:last_channel],
         counts[first_channel:last_channel],
-        gaussian,
-        guess,
+        p0=guess,
     )
     scale = last_channel - first_channel
     peak_fit_x = np.arange(first_channel - scale / 10, last_channel - scale / 10)
@@ -126,13 +118,15 @@ def fit_peak(
 
 def calib_curve(
     peak_centres: np.ndarray,
+    peak_centre_errs: np.ndarray,
     energies: np.ndarray,
     guess: List[float],
     sample: str,
     save_fig: bool = False,
     path_save: Path = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Produce a calibration curve given peak locations and test known energies from literature.
+    """Produce a calibration curve given peak locations and test known energies
+    from literature.
 
     Args:
         peak_centres (np.ndarray[float]): Locations of peaks (centre channel).
@@ -143,31 +137,44 @@ def calib_curve(
         path_save (Path, optional): Path to save output plot. Defaults to None.
 
     Returns:
-        (array, 2D array): Linear fit parameters and error covariance of fit.
+        Tuple[np.ndarray, np.ndarray]: Linear fit parameters and uncertainties
+            on fit parameters.
     """
-    calib_fit, calib_err = fit_points(peak_centres, energies, line, guess)
+    calib_fit, calib_err = curve_fit(
+        line, peak_centres, energies, p0=guess, sigma=peak_centre_errs,
+    )
     channel_range = int(max(peak_centres) - min(peak_centres))
     fit_x = np.arange(
         int(min(peak_centres) - channel_range / 2),
         int(max(peak_centres) + channel_range / 2),
     )
     fit_y = line(fit_x, calib_fit[0], calib_fit[1])
+
+    expected_y = line(peak_centres, calib_fit[0], calib_fit[1])
+    chisq_fit, p_fit = chisquare(energies, expected_y, ddof=len(calib_fit))
+    calib_params_err = np.diag(calib_err) * max(1, np.sqrt(chisq_fit))
+
     plt.figure()
     plt.plot(fit_x, fit_y)
+    plt.errorbar(peak_centres, energies, peak_centre_errs, fmt="none", ecolor="firebrick")
     plt.plot(peak_centres, energies, ".")
     plt.title(sample + " Calibration Curve")
     plt.xlabel("Channel $N$")
     plt.ylabel("Energy $E$ (keV)")
     plt.text(
-        245,
-        385,
-        "calibration curve: $E="
-        + str(round(calib_fit[0], 4))
-        + "N"
-        + str(round(calib_fit[1], 3))
-        + "$",
-        ha="center",
-        va="center",
+        105,
+        400,
+        "$E = ("
+        + str(round(calib_fit[0], 8))
+        + " \pm "
+        + str(round(calib_params_err[0], 8))
+        + ") N + ("
+        + str(round(calib_fit[1], 4))
+        + " \pm "
+        + str(round(calib_params_err[1], 4))
+        + ")$",
+        ha="left",
+        va="top",
         transform=None,
     )
     if save_fig:
@@ -176,4 +183,4 @@ def calib_curve(
     else:
         plt.show()
 
-    return calib_fit, calib_err
+    return calib_fit, calib_params_err
