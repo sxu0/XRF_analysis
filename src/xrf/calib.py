@@ -17,7 +17,7 @@ from scipy.stats import chisquare
 
 
 def gaussian(x: np.ndarray, height: float, centre: float, std: float):
-    return height * np.exp(-((x - centre) ** 2) / (2 * std ** 2))
+    return height * np.exp(-((x - centre) ** 2) / (2 * std**2))
 
 
 def line(x: np.ndarray, slope: float, intercept: float):
@@ -75,18 +75,23 @@ def fit_peak(
         path_save (Path, optional): Path to save output plot. Defaults to None.
 
     Returns:
-        (array, 2D array): Fit parameters and error covariance of fit.
+        Tuple[np.ndarray, np.ndarray]: Fit parameters and their uncertainties.
     """
-    peak_fit, fit_err = curve_fit(
+    peak_fit, fit_err_cov = curve_fit(
         gaussian,
         channels[first_channel:last_channel],
         counts[first_channel:last_channel],
         p0=guess,
     )
+    fit_err = np.sqrt(np.diag(fit_err_cov))
+
     scale = last_channel - first_channel
     peak_fit_x = np.arange(first_channel - scale / 10, last_channel - scale / 10)
     peak_fit_y = gaussian(peak_fit_x, peak_fit[0], peak_fit[1], peak_fit[2])
+
     peak_centre = round(peak_fit[1], 2)
+    peak_centre_err = round(fit_err[1], 2)
+
     plt.figure()
     plt.plot(
         channels[first_channel:last_channel],
@@ -99,11 +104,11 @@ def fit_peak(
     plt.xlabel("Channel")
     plt.ylabel("Count")
     plt.text(
-        175,
-        385,
-        "centre:   " + str(peak_centre),
-        ha="center",
-        va="center",
+        110,
+        395,
+        "centre:   $" + str(peak_centre) + " \pm " + str(peak_centre_err) + "$",
+        ha="left",
+        va="top",
         transform=None,
     )
     plt.legend()
@@ -137,11 +142,14 @@ def calib_curve(
         path_save (Path, optional): Path to save output plot. Defaults to None.
 
     Returns:
-        Tuple[np.ndarray, np.ndarray]: Linear fit parameters and uncertainties
-            on fit parameters.
+        Tuple[np.ndarray, np.ndarray]: Linear fit parameters and their uncertainties.
     """
-    calib_fit, calib_err = curve_fit(
-        line, peak_centres, energies, p0=guess, sigma=peak_centre_errs,
+    calib_fit, calib_err_cov = curve_fit(
+        line,
+        peak_centres,
+        energies,
+        p0=guess,
+        sigma=peak_centre_errs,
     )
     channel_range = int(max(peak_centres) - min(peak_centres))
     fit_x = np.arange(
@@ -152,11 +160,13 @@ def calib_curve(
 
     expected_y = line(peak_centres, calib_fit[0], calib_fit[1])
     chisq_fit, p_fit = chisquare(energies, expected_y, ddof=len(calib_fit))
-    calib_params_err = np.diag(calib_err) * max(1, np.sqrt(chisq_fit))
+    calib_err = np.diag(calib_err_cov) * max(1, np.sqrt(chisq_fit))
 
     plt.figure()
     plt.plot(fit_x, fit_y)
-    plt.errorbar(peak_centres, energies, peak_centre_errs, fmt="none", ecolor="firebrick")
+    plt.errorbar(
+        peak_centres, energies, peak_centre_errs, fmt="none", ecolor="firebrick"
+    )
     plt.plot(peak_centres, energies, ".")
     plt.title(sample + " Calibration Curve")
     plt.xlabel("Channel $N$")
@@ -167,11 +177,11 @@ def calib_curve(
         "$E = ("
         + str(round(calib_fit[0], 8))
         + " \pm "
-        + str(round(calib_params_err[0], 8))
+        + str(round(calib_err[0], 8))
         + ") N + ("
         + str(round(calib_fit[1], 4))
         + " \pm "
-        + str(round(calib_params_err[1], 4))
+        + str(round(calib_err[1], 4))
         + ")$",
         ha="left",
         va="top",
@@ -183,4 +193,4 @@ def calib_curve(
     else:
         plt.show()
 
-    return calib_fit, calib_params_err
+    return calib_fit, calib_err
