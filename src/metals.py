@@ -7,36 +7,15 @@ Author: Shiqi Xu
 """
 
 from pathlib import Path
-from re import M
 
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
 
 from xrf import calib
 import calibration
 
 
-# 20220330_au_run1.csv
-# 20220330_cu_run1.csv
-# 20220330_pb_run1.csv
-# 20220331_cd_run1.csv
-# 20220331_ni_run1.csv
-# 20220331_se_run1.csv
-# 20220331_ti_run1.csv
-# 20220331_ag_run1.csv
-# 20220331_ag_high_rate.csv
-
-# metal = "au"
-# metal = "cu"
-# metal = "pb"
-# metal = "ag"
-# metal = "ag_HR"
-# metal = "cd"
-# metal = "ni"
-# metal = "se"
-metal = "ti_HR"
+metal = ["au", "cu", "pb", "ag", "ag_HR", "cd", "ni", "se", "ti_HR"]
 
 
 if __name__ == "__main__":
@@ -49,7 +28,7 @@ if __name__ == "__main__":
     high_rate_energies = calibration.energies_high_rate
 
 
-    if metal == "au":
+    if "au" in metal:
         # region: Au spectrum calibration
         au_counts = calib.read_data(data_path / "20220330_au_run1.csv")
         au_peak_centre_channels = []
@@ -112,7 +91,7 @@ if __name__ == "__main__":
         plt.close()
         # endregion: Au spectrum calibration
 
-    if metal == "cu":
+    if "cu" in metal:
         # region: Cu spectrum calibration
         cu_counts = calib.read_data(data_path / "20220330_cu_run1.csv")
         cu_peak_centre_channels = []
@@ -163,7 +142,7 @@ if __name__ == "__main__":
         plt.close()
         # endregion: Cu spectrum calibration
 
-    if metal == "pb":
+    if "pb" in metal:
         # region: Pb spectrum calibration
         pb_counts = calib.read_data(data_path / "20220330_pb_run1.csv")
         pb_peak_centre_channels = []
@@ -226,7 +205,7 @@ if __name__ == "__main__":
         plt.close()
         # endregion: Pb spectrum calibration
 
-    if metal == "ag":
+    if "ag" in metal:
         # region: Ag spectrum calibration
         ag_counts = calib.read_data(data_path / "20220331_ag_run1.csv")
         ag_peak_centre_channels = []
@@ -277,7 +256,7 @@ if __name__ == "__main__":
         plt.close()
         # endregion: Ag spectrum calibration
 
-    if metal == "ag_HR":
+    if "ag_HR" in metal:
         # region: Ag high-rate spectrum calibration
         ag_HR_counts = calib.read_data(data_path / "20220331_ag_high_rate.csv")
         ag_HR_peak_centre_channels = []
@@ -328,7 +307,7 @@ if __name__ == "__main__":
         plt.close()
         # endregion: Ag high-rate spectrum calibration
 
-    if metal == "cd":
+    if "cd" in metal:
         # region: Cd spectrum calibration
         cd_counts = calib.read_data(data_path / "20220331_cd_run1.csv")
         cd_peak_centre_channels = []
@@ -391,7 +370,7 @@ if __name__ == "__main__":
         plt.close()
         # endregion: Cd spectrum calibration
 
-    if metal == "ni":
+    if "ni" in metal:
         # region: Ni spectrum calibration
         ni_counts = calib.read_data(data_path / "20220331_ni_run1.csv")
         ni_peak_centre_channels = []
@@ -442,7 +421,7 @@ if __name__ == "__main__":
         plt.close()
         # endregion: Ni spectrum calibration
 
-    if metal == "se":
+    if "se" in metal:
         # region: Se spectrum calibration
         se_counts = calib.read_data(data_path / "20220331_se_run1.csv")
         se_peak_centre_channels = []
@@ -493,7 +472,7 @@ if __name__ == "__main__":
         plt.close()
         # endregion: Se spectrum calibration
 
-    if metal == "ti_HR":
+    if "ti_HR" in metal:
         # region: Ti high-rate spectrum calibration
         ti_HR_counts = calib.read_data(data_path / "20220331_ti_high_rate.csv")
         ti_HR_peak_centre_channels = []
