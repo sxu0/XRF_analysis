@@ -13,7 +13,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
-import xrf.calibration as calib
+from xrf import calib
 
 
 ## mode: "default" or "high_rate"

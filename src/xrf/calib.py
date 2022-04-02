@@ -1,5 +1,5 @@
 """
-calibration.py
+calib.py
 
 Produces a calibration curve for XRF setup based on
 reference energies of radioactive sources.
