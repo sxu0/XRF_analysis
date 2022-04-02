@@ -59,9 +59,10 @@ def read_data(filename: Path) -> np.ndarray:
 
 
 def fit_peak(
+    channels: np.ndarray,
     counts: np.ndarray,
-    first_channel: int,
-    last_channel: int,
+    first_channel: float,
+    last_channel: float,
     guess: List[float],
     sample: str,
     save_fig: bool = False,
@@ -71,9 +72,11 @@ def fit_peak(
     Produces a plot.
 
     Args:
+        channels (np.ndarray[float]): Detector channel corresponding to an energy bin.
+            Alternately, energy levels.
         counts (np.ndarray[int]): Counts seen in each channel.
-        first_channel (int): Lower bound on channels to include in fit.
-        last_channel (int): Upper bound on channels to include in fit.
+        first_channel (float): Lower bound on channels (energy levels) included in fit.
+        last_channel (float): Upper bound on channels (energy levels) included in fit.
         guess (List[float]): Guesses for Gaussian parameters, [height, centre, std].
         sample (str): Name of sample. Used in plot title.
         save_fig (bool, optional): Whether to save output plot. Defaults to False.
@@ -82,7 +85,6 @@ def fit_peak(
     Returns:
         (array, 2D array): Fit parameters and error covariance of fit.
     """
-    channels = np.arange(0, len(counts))
     peak_fit, fit_err = fit_points(
         channels[first_channel:last_channel],
         counts[first_channel:last_channel],

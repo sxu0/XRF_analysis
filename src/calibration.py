@@ -26,12 +26,15 @@ if __name__ == "__main__":
     data_path = Path.cwd() / "data"
     fig_path = Path.cwd() / "outputs"
 
+    SDD_channels = np.arange(0, 2048)
+
     if mode == "default":
         # region: calibration of FastSDD Default PX5 setting
         pb210_data = calib.read_data(data_path / "20220330_pb210_run1.csv")
         pb210_peak_centres = []
 
         pb210_peak1_fit, pb210_peak1_err = calib.fit_peak(
+            SDD_channels,
             pb210_data,
             846,
             886,
@@ -43,6 +46,7 @@ if __name__ == "__main__":
         pb210_peak_centres.append(pb210_peak1_fit[1])
 
         pb210_peak2_fit, pb210_peak2_err = calib.fit_peak(
+            SDD_channels,
             pb210_data,
             1003,
             1025,
@@ -54,6 +58,7 @@ if __name__ == "__main__":
         pb210_peak_centres.append(pb210_peak2_fit[1])
 
         pb210_peak3_fit, pb210_peak3_err = calib.fit_peak(
+            SDD_channels,
             pb210_data,
             1027,
             1074,
@@ -65,6 +70,7 @@ if __name__ == "__main__":
         pb210_peak_centres.append(pb210_peak3_fit[1])
 
         pb210_peak4_fit, pb210_peak4_err = calib.fit_peak(
+            SDD_channels,
             pb210_data,
             1229,
             1263,
@@ -84,8 +90,7 @@ if __name__ == "__main__":
             path_save = fig_path / "calib_fastSDD_default.png",
         )
 
-        channels = np.arange(0, 2048)
-        energies_default = calib.line(channels, pb210_calib_fit[0], pb210_calib_fit[1])
+        energies_default = calib.line(SDD_channels, pb210_calib_fit[0], pb210_calib_fit[1])
         # endregion: calibration of FastSDD Default PX5 setting
 
     elif mode == "high_rate":
@@ -94,6 +99,7 @@ if __name__ == "__main__":
         cs137_peak_centres = []
 
         cs137_peak1_fit, cs137_peak1_err = calib.fit_peak(
+            SDD_channels,
             cs137_data,
             1251,
             1300,
@@ -105,6 +111,7 @@ if __name__ == "__main__":
         cs137_peak_centres.append(cs137_peak1_fit[1])
 
         cs137_peak2_fit, cs137_peak2_err = calib.fit_peak(
+            SDD_channels,
             cs137_data,
             1429,
             1454,
@@ -124,6 +131,5 @@ if __name__ == "__main__":
             path_save = fig_path / "calib_fastSDD_high_rate.png",
         )
 
-        channels = np.arange(0, 2048)
-        energies = calib.line(channels, cs137_calib_fit[0], cs137_calib_fit[1])
+        energies = calib.line(SDD_channels, cs137_calib_fit[0], cs137_calib_fit[1])
         # endregion: calibration of FastSDD High Rate PX5 setting
