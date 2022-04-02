@@ -1,7 +1,7 @@
 """
-metals.py
+calibration.py
 
-Central XRF analysis for metal samples.
+Calibration of _Default_ and _High Rate_ detector settings.
 
 Author: Shiqi Xu
 """
