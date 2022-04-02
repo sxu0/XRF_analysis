@@ -1,7 +1,7 @@
 """
 calib_pb210.py
 
-An early trial of calibration. See `metals.py` for more recent, clearer work.
+An early trial of calibration. See `calibration.py` for more recent, clearer work.
 
 Author: Shiqi Xu
 """
