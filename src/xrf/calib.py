@@ -12,6 +12,7 @@ from typing import Tuple, List, Callable
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 from scipy.optimize import curve_fit
 from scipy.stats import chisquare
 
@@ -102,6 +103,7 @@ def fit_peak(
         label="data",
     )
     plt.plot(peak_fit_x, peak_fit_y, label="fit")
+    plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
     plt.title(sample + " peak centred around channel " + str(peak_centre))
     plt.xlabel("Channel")
     plt.ylabel("Count")
