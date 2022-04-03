@@ -16,7 +16,7 @@ from scipy.optimize import curve_fit
 
 
 def gaussian(x, height, centre, std):
-    return height * np.exp(-((x - centre) ** 2) / (2 * std ** 2))
+    return height * np.exp(-((x - centre) ** 2) / (2 * std**2))
 
 
 def line(x, slope, intercept):

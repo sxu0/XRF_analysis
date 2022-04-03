@@ -48,8 +48,8 @@ if __name__ == "__main__":
         au_peak2_fit, au_peak2_err = calib.fit_peak(
             SDD_channels,
             au_counts,
-            901-5,
-            937+10,
+            901 - 5,
+            937 + 10,
             [34, 919, 7.4],
             "Au",
         )
@@ -94,7 +94,9 @@ if __name__ == "__main__":
             + au_calib_err[1] ** 2
         )
         au_energies = calib.line(
-            np.array(SDD_channels), au_calib_fit[0], au_calib_fit[1],
+            np.array(SDD_channels),
+            au_calib_fit[0],
+            au_calib_fit[1],
         )
 
         plt.figure()
@@ -138,7 +140,7 @@ if __name__ == "__main__":
             SDD_channels,
             cu_counts,
             696,
-            724+7,
+            724 + 7,
             [17, 711, 3],
             "Cu",
         )
@@ -172,7 +174,9 @@ if __name__ == "__main__":
             + cu_calib_err[1] ** 2
         )
         cu_energies = calib.line(
-            np.array(SDD_channels), cu_calib_fit[0], cu_calib_fit[1],
+            np.array(SDD_channels),
+            cu_calib_fit[0],
+            cu_calib_fit[1],
         )
 
         plt.figure()
@@ -261,7 +265,9 @@ if __name__ == "__main__":
             + pb_calib_err[1] ** 2
         )
         pb_energies = calib.line(
-            np.array(SDD_channels), pb_calib_fit[0], pb_calib_fit[1],
+            np.array(SDD_channels),
+            pb_calib_fit[0],
+            pb_calib_fit[1],
         )
 
         plt.figure()
@@ -339,7 +345,9 @@ if __name__ == "__main__":
             + ni_calib_err[1] ** 2
         )
         ni_energies = calib.line(
-            np.array(SDD_channels), ni_calib_fit[0], ni_calib_fit[1],
+            np.array(SDD_channels),
+            ni_calib_fit[0],
+            ni_calib_fit[1],
         )
 
         plt.figure()
@@ -417,7 +425,9 @@ if __name__ == "__main__":
             + se_calib_err[1] ** 2
         )
         se_energies = calib.line(
-            np.array(SDD_channels), se_calib_fit[0], se_calib_fit[1],
+            np.array(SDD_channels),
+            se_calib_fit[0],
+            se_calib_fit[1],
         )
 
         plt.figure()
@@ -449,8 +459,8 @@ if __name__ == "__main__":
         ti_HR_peak1_fit, ti_HR_peak1_err = calib.fit_peak(
             SDD_channels,
             ti_HR_counts,
-            175-3,
-            189+3,
+            175 - 3,
+            189 + 3,
             [110, 181, 2.2],
             "Ti",
         )
@@ -460,8 +470,8 @@ if __name__ == "__main__":
         ti_HR_peak2_fit, ti_HR_peak2_err = calib.fit_peak(
             SDD_channels,
             ti_HR_counts,
-            193-4,
-            205+4,
+            193 - 4,
+            205 + 4,
             [17, 198, 1.7],
             "Ti",
         )
@@ -506,7 +516,9 @@ if __name__ == "__main__":
             + ti_HR_calib_err[1] ** 2
         )
         ti_HR_energies = calib.line(
-            np.array(SDD_channels), ti_HR_calib_fit[0], ti_HR_calib_fit[1],
+            np.array(SDD_channels),
+            ti_HR_calib_fit[0],
+            ti_HR_calib_fit[1],
         )
 
         plt.figure()
