@@ -15,8 +15,8 @@ from xrf import calib
 import calibration
 
 
-# metal = ["au", "cu", "pb", "ag", "ag_HR", "cd", "ni", "se", "ti_HR"]
-metal = ["cu"]
+metal = ["au", "cu", "pb", "ag", "ag_HR", "cd", "ni", "se", "ti_HR"]
+# metal = ["cu"]
 
 
 if __name__ == "__main__":
