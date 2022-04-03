@@ -15,8 +15,8 @@ from xrf import calib
 import calibration
 
 
-# metal = ["au", "cu", "pb", "ag", "ag_HR", "cd", "ni", "se", "ti_HR"]
-metal = ["au"]
+metal = ["au", "cu", "pb", "ni", "se", "ti_HR"]
+# metal = ["ti_HR"]
 
 
 if __name__ == "__main__":
@@ -41,8 +41,6 @@ if __name__ == "__main__":
             796,
             [118, 776, 5.5],
             "Au",
-            save_fig=True,
-            path_save=fig_path / "20220330_au_peak1_fit.png",
         )
         au_peak_centre_channels.append(au_peak1_fit[1])
         au_peak_centre_channel_errs.append(au_peak1_err[1])
@@ -54,8 +52,6 @@ if __name__ == "__main__":
             937+10,
             [34, 919, 7.4],
             "Au",
-            save_fig=True,
-            path_save=fig_path / "20220330_au_peak2_fit.png",
         )
         au_peak_centre_channels.append(au_peak2_fit[1])
         au_peak_centre_channel_errs.append(au_peak2_err[1])
@@ -67,8 +63,6 @@ if __name__ == "__main__":
             1116,
             [5, 1069, 15],
             "Au",
-            save_fig=True,
-            path_save=fig_path / "20220330_au_peak3_fit.png",
         )
         au_peak_centre_channels.append(au_peak3_fit[1])
         au_peak_centre_channel_errs.append(au_peak3_err[1])
@@ -76,18 +70,31 @@ if __name__ == "__main__":
         au_peak_centre_channels = np.array(au_peak_centre_channels)
         au_peak_centre_channel_errs = np.array(au_peak_centre_channel_errs)
 
+        au_calib_fit, au_calib_err = calib.calib_curve(
+            au_peak_centre_channels,
+            au_peak_centre_channel_errs,
+            [9.705, 11.432, 13.383],
+            [0, 0],
+            "Au",
+            save_fig=True,
+            path_save=fig_path / "au_calib_curve.png",
+        )
+
         au_peak_centre_energies = calib.line(
             np.array(au_peak_centre_channels),
-            calibration.pb210_calib_fit[0],
-            calibration.pb210_calib_fit[1],
+            au_calib_fit[0],
+            au_calib_fit[1],
         )
         au_peak_centre_energy_errs = np.sqrt(
             au_peak_centre_energies**2
             * (
-                (calibration.pb210_calib_err[0] / calibration.pb210_calib_fit[0]) ** 2
+                (au_calib_err[0] / au_calib_fit[0]) ** 2
                 + (au_peak_centre_channel_errs / au_peak_centre_channels) ** 2
             )
-            + calibration.pb210_calib_err[1] ** 2
+            + au_calib_err[1] ** 2
+        )
+        au_energies = calib.line(
+            np.array(SDD_channels), au_calib_fit[0], au_calib_fit[1],
         )
 
         plt.figure()
@@ -99,14 +106,14 @@ if __name__ == "__main__":
                 + " \pm "
                 + str(round(au_peak_centre_energy_errs[i], 2))
                 + "$ keV",
-                color="gold",
+                color="darkorange",
             )
-        plt.plot(default_energies, au_counts, ".", markersize=4)
-        plt.title("Au XRF Spectrum, Default Setting Calibrated")
+        plt.plot(au_energies, au_counts, ".", markersize=4)
+        plt.title("Au Calibrated")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "au_spectrum.png")
+        plt.savefig(fig_path / "au_spectrum_calib.png")
         plt.close()
         # endregion: Au spectrum calibration
 
@@ -123,8 +130,6 @@ if __name__ == "__main__":
             659,
             [115, 643, 5.4],
             "Cu",
-            save_fig=True,
-            path_save=fig_path / "20220330_cu_peak1_fit.png",
         )
         cu_peak_centre_channels.append(cu_peak1_fit[1])
         cu_peak_centre_channel_errs.append(cu_peak1_err[1])
@@ -136,8 +141,6 @@ if __name__ == "__main__":
             724+7,
             [17, 711, 3],
             "Cu",
-            save_fig=True,
-            path_save=fig_path / "20220330_cu_peak2_fit.png",
         )
         cu_peak_centre_channels.append(cu_peak2_fit[1])
         cu_peak_centre_channel_errs.append(cu_peak2_err[1])
@@ -145,18 +148,31 @@ if __name__ == "__main__":
         cu_peak_centre_channels = np.array(cu_peak_centre_channels)
         cu_peak_centre_channel_errs = np.array(cu_peak_centre_channel_errs)
 
+        cu_calib_fit, cu_calib_err = calib.calib_curve(
+            cu_peak_centre_channels,
+            cu_peak_centre_channel_errs,
+            [8.048, 8.905],
+            [0, 0],
+            "Cu",
+            save_fig=True,
+            path_save=fig_path / "cu_calib_curve.png",
+        )
+
         cu_peak_centre_energies = calib.line(
             np.array(cu_peak_centre_channels),
-            calibration.pb210_calib_fit[0],
-            calibration.pb210_calib_fit[1],
+            cu_calib_fit[0],
+            cu_calib_fit[1],
         )
         cu_peak_centre_energy_errs = np.sqrt(
             cu_peak_centre_energies**2
             * (
-                (calibration.pb210_calib_err[0] / calibration.pb210_calib_fit[0]) ** 2
+                (cu_calib_err[0] / cu_calib_fit[0]) ** 2
                 + (cu_peak_centre_channel_errs / cu_peak_centre_channels) ** 2
             )
-            + calibration.pb210_calib_err[1] ** 2
+            + cu_calib_err[1] ** 2
+        )
+        cu_energies = calib.line(
+            np.array(SDD_channels), cu_calib_fit[0], cu_calib_fit[1],
         )
 
         plt.figure()
@@ -168,14 +184,14 @@ if __name__ == "__main__":
                 + " \pm "
                 + str(round(cu_peak_centre_energy_errs[i], 2))
                 + "$ keV",
-                color="gold",
+                color="darkorange",
             )
-        plt.plot(default_energies, cu_counts, ".", markersize=4)
-        plt.title("Cu XRF Spectrum, Default Setting Calibrated")
+        plt.plot(cu_energies, cu_counts, ".", markersize=4)
+        plt.title("Cu Calibrated")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "cu_spectrum.png")
+        plt.savefig(fig_path / "cu_spectrum_calib.png")
         plt.close()
         # endregion: Cu spectrum calibration
 
@@ -192,8 +208,6 @@ if __name__ == "__main__":
             755,
             [5, 734, 5],
             "Pb",
-            save_fig=True,
-            path_save=fig_path / "20220330_pb_peak1_fit.png",
         )
         pb_peak_centre_channels.append(pb_peak1_fit[1])
         pb_peak_centre_channel_errs.append(pb_peak1_err[1])
@@ -205,8 +219,6 @@ if __name__ == "__main__":
             864,
             [95, 842, 6.7],
             "Pb",
-            save_fig=True,
-            path_save=fig_path / "20220330_pb_peak2_fit.png",
         )
         pb_peak_centre_channels.append(pb_peak2_fit[1])
         pb_peak_centre_channel_errs.append(pb_peak2_err[1])
@@ -218,8 +230,6 @@ if __name__ == "__main__":
             1054,
             [25, 1007, 8],
             "Pb",
-            save_fig=True,
-            path_save=fig_path / "20220330_pb_peak3_fit.png",
         )
         pb_peak_centre_channels.append(pb_peak3_fit[1])
         pb_peak_centre_channel_errs.append(pb_peak3_err[1])
@@ -227,18 +237,31 @@ if __name__ == "__main__":
         pb_peak_centre_channels = np.array(pb_peak_centre_channels)
         pb_peak_centre_channel_errs = np.array(pb_peak_centre_channel_errs)
 
+        pb_calib_fit, pb_calib_err = calib.calib_curve(
+            pb_peak_centre_channels,
+            pb_peak_centre_channel_errs,
+            [9.185, 10.555, 12.618],
+            [0, 0],
+            "Pb",
+            save_fig=True,
+            path_save=fig_path / "pb_calib_curve.png",
+        )
+
         pb_peak_centre_energies = calib.line(
             np.array(pb_peak_centre_channels),
-            calibration.pb210_calib_fit[0],
-            calibration.pb210_calib_fit[1],
+            pb_calib_fit[0],
+            pb_calib_fit[1],
         )
         pb_peak_centre_energy_errs = np.sqrt(
             pb_peak_centre_energies**2
             * (
-                (calibration.pb210_calib_err[0] / calibration.pb210_calib_fit[0]) ** 2
+                (pb_calib_err[0] / pb_calib_fit[0]) ** 2
                 + (pb_peak_centre_channel_errs / pb_peak_centre_channels) ** 2
             )
-            + calibration.pb210_calib_err[1] ** 2
+            + pb_calib_err[1] ** 2
+        )
+        pb_energies = calib.line(
+            np.array(SDD_channels), pb_calib_fit[0], pb_calib_fit[1],
         )
 
         plt.figure()
@@ -250,236 +273,16 @@ if __name__ == "__main__":
                 + " \pm "
                 + str(round(pb_peak_centre_energy_errs[i], 2))
                 + "$ keV",
-                color="gold",
+                color="darkorange",
             )
-        plt.plot(default_energies, pb_counts, ".", markersize=4)
-        plt.title("Pb XRF Spectrum, Default Setting Calibrated")
+        plt.plot(pb_energies, pb_counts, ".", markersize=4)
+        plt.title("Pb Calibrated")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "pb_spectrum.png")
+        plt.savefig(fig_path / "pb_spectrum_calib.png")
         plt.close()
         # endregion: Pb spectrum calibration
-
-    if "ag" in metal:
-        # region: Ag spectrum calibration
-        ag_counts = calib.read_data(data_path / "20220331_ag_run1.csv")
-        ag_peak_centre_channels = []
-        ag_peak_centre_channel_errs = []
-
-        ag_peak1_fit, ag_peak1_err = calib.fit_peak(
-            SDD_channels,
-            ag_counts,
-            216,
-            283,
-            [5, 247, 14],
-            "Ag",
-            save_fig=True,
-            path_save=fig_path / "20220331_ag_peak1_fit.png",
-        )
-        ag_peak_centre_channels.append(ag_peak1_fit[1])
-        ag_peak_centre_channel_errs.append(ag_peak1_err[1])
-
-        ag_peak2_fit, ag_peak2_err = calib.fit_peak(
-            SDD_channels,
-            ag_counts,
-            798,
-            1190,
-            [11, 1110, 70],
-            "Ag",
-            save_fig=True,
-            path_save=fig_path / "20220331_ag_peak2_fit.png",
-        )
-        ag_peak_centre_channels.append(ag_peak2_fit[1])
-        ag_peak_centre_channel_errs.append(ag_peak2_err[1])
-
-        ag_peak_centre_channels = np.array(ag_peak_centre_channels)
-        ag_peak_centre_channel_errs = np.array(ag_peak_centre_channel_errs)
-
-        ag_peak_centre_energies = calib.line(
-            np.array(ag_peak_centre_channels),
-            calibration.pb210_calib_fit[0],
-            calibration.pb210_calib_fit[1],
-        )
-        ag_peak_centre_energy_errs = np.sqrt(
-            ag_peak_centre_energies**2
-            * (
-                (calibration.pb210_calib_err[0] / calibration.pb210_calib_fit[0]) ** 2
-                + (ag_peak_centre_channel_errs / ag_peak_centre_channels) ** 2
-            )
-            + calibration.pb210_calib_err[1] ** 2
-        )
-
-        plt.figure()
-        for i in range(len(ag_peak_centre_energies)):
-            plt.axvline(
-                x=ag_peak_centre_energies[i],
-                label="$E = "
-                + str(round(ag_peak_centre_energies[i], 2))
-                + " \pm "
-                + str(round(ag_peak_centre_energy_errs[i], 2))
-                + "$ keV",
-                color="gold",
-            )
-        plt.plot(default_energies, ag_counts, ".", markersize=4)
-        plt.title("Ag XRF Spectrum, Default Setting Calibrated")
-        plt.xlabel("Energy (keV)")
-        plt.ylabel("Count")
-        plt.legend()
-        plt.savefig(fig_path / "ag_spectrum.png")
-        plt.close()
-        # endregion: Ag spectrum calibration
-
-    if "ag_HR" in metal:
-        # region: Ag high-rate spectrum calibration
-        ag_HR_counts = calib.read_data(data_path / "20220331_ag_high_rate.csv")
-        ag_HR_peak_centre_channels = []
-        ag_HR_peak_centre_channel_errs = []
-
-        ag_HR_peak1_fit, ag_HR_peak1_err = calib.fit_peak(
-            SDD_channels,
-            ag_HR_counts,
-            116-7,
-            138+15,
-            [9, 125, 9],
-            "Ag",
-            save_fig=True,
-            path_save=fig_path / "20220331_ag_HR_peak1_fit.png",
-        )
-        ag_HR_peak_centre_channels.append(ag_HR_peak1_fit[1])
-        ag_HR_peak_centre_channel_errs.append(ag_HR_peak1_err[1])
-
-        ag_HR_peak2_fit, ag_HR_peak2_err = calib.fit_peak(
-            SDD_channels,
-            ag_HR_counts,
-            397,
-            603,
-            [27, 526, 50],
-            "Ag",
-            save_fig=True,
-            path_save=fig_path / "20220331_ag_HR_peak2_fit.png",
-        )
-        ag_HR_peak_centre_channels.append(ag_HR_peak2_fit[1])
-        ag_HR_peak_centre_channel_errs.append(ag_HR_peak2_err[1])
-
-        ag_HR_peak_centre_channels = np.array(ag_HR_peak_centre_channels)
-        ag_HR_peak_centre_channel_errs = np.array(ag_HR_peak_centre_channel_errs)
-
-        ag_HR_peak_centre_energies = calib.line(
-            np.array(ag_HR_peak_centre_channels),
-            calibration.cs137_calib_fit[0],
-            calibration.cs137_calib_fit[1],
-        )
-        ag_HR_peak_centre_energy_errs = np.sqrt(
-            ag_HR_peak_centre_energies**2
-            * (
-                (calibration.pb210_calib_err[0] / calibration.pb210_calib_fit[0]) ** 2
-                + (ag_HR_peak_centre_channel_errs / ag_HR_peak_centre_channels) ** 2
-            )
-            + calibration.pb210_calib_err[1] ** 2
-        )
-
-        plt.figure()
-        for i in range(len(ag_HR_peak_centre_energies)):
-            plt.axvline(
-                x=ag_HR_peak_centre_energies[i],
-                label="$E = "
-                + str(round(ag_HR_peak_centre_energies[i], 2))
-                + " \pm "
-                + str(round(ag_HR_peak_centre_energy_errs[i], 2))
-                + "$ keV",
-                color="gold",
-            )
-        plt.plot(high_rate_energies, ag_HR_counts, ".", markersize=4)
-        plt.title("Ag XRF Spectrum, High Rate Setting Calibrated")
-        plt.xlabel("Energy (keV)")
-        plt.ylabel("Count")
-        plt.legend()
-        plt.savefig(fig_path / "ag_HR_spectrum.png")
-        plt.close()
-        # endregion: Ag high-rate spectrum calibration
-
-    if "cd" in metal:
-        # region: Cd spectrum calibration
-        cd_counts = calib.read_data(data_path / "20220331_cd_run1.csv")
-        cd_peak_centre_channels = []
-        cd_peak_centre_channel_errs = []
-
-        cd_peak1_fit, cd_peak1_err = calib.fit_peak(
-            SDD_channels,
-            cd_counts,
-            217,
-            330,
-            [7, 260, 18],
-            "Cd",
-            save_fig=True,
-            path_save=fig_path / "20220331_cd_peak1_fit.png",
-        )
-        cd_peak_centre_channels.append(cd_peak1_fit[1])
-        cd_peak_centre_channel_errs.append(cd_peak1_err[1])
-
-        cd_peak2_fit, cd_peak2_err = calib.fit_peak(
-            SDD_channels,
-            cd_counts,
-            675,
-            709,
-            [11, 694, 10],
-            "Cd",
-            save_fig=True,
-            path_save=fig_path / "20220331_cd_peak2_fit.png",
-        )
-        cd_peak_centre_channels.append(cd_peak2_fit[1])
-        cd_peak_centre_channel_errs.append(cd_peak2_err[1])
-
-        cd_peak3_fit, cd_peak3_err = calib.fit_peak(
-            SDD_channels,
-            cd_counts,
-            803,
-            1202,
-            [11, 1045, 100],
-            "Cd",
-            save_fig=True,
-            path_save=fig_path / "20220331_cd_peak3_fit.png",
-        )
-        cd_peak_centre_channels.append(cd_peak3_fit[1])
-        cd_peak_centre_channel_errs.append(cd_peak3_err[1])
-
-        cd_peak_centre_channels = np.array(cd_peak_centre_channels)
-        cd_peak_centre_channel_errs = np.array(cd_peak_centre_channel_errs)
-
-        cd_peak_centre_energies = calib.line(
-            np.array(cd_peak_centre_channels),
-            calibration.pb210_calib_fit[0],
-            calibration.pb210_calib_fit[1],
-        )
-        cd_peak_centre_energy_errs = np.sqrt(
-            cd_peak_centre_energies**2
-            * (
-                (calibration.pb210_calib_err[0] / calibration.pb210_calib_fit[0]) ** 2
-                + (cd_peak_centre_channel_errs / cd_peak_centre_channels) ** 2
-            )
-            + calibration.pb210_calib_err[1] ** 2
-        )
-
-        plt.figure()
-        for i in range(len(cd_peak_centre_energies)):
-            plt.axvline(
-                x=cd_peak_centre_energies[i],
-                label="$E = "
-                + str(round(cd_peak_centre_energies[i], 2))
-                + " \pm "
-                + str(round(cd_peak_centre_energy_errs[i], 2))
-                + "$ keV",
-                color="gold",
-            )
-        plt.plot(default_energies, cd_counts, ".", markersize=4)
-        plt.title("Cd XRF Spectrum, Default Setting Calibrated")
-        plt.xlabel("Energy (keV)")
-        plt.ylabel("Count")
-        plt.legend()
-        plt.savefig(fig_path / "cd_spectrum.png")
-        plt.close()
-        # endregion: Cd spectrum calibration
 
     if "ni" in metal:
         # region: Ni spectrum calibration
@@ -494,8 +297,6 @@ if __name__ == "__main__":
             710,
             [96, 690, 5],
             "Ni",
-            save_fig=True,
-            path_save=fig_path / "20220331_ni_peak1_fit.png",
         )
         ni_peak_centre_channels.append(ni_peak1_fit[1])
         ni_peak_centre_channel_errs.append(ni_peak1_err[1])
@@ -507,8 +308,6 @@ if __name__ == "__main__":
             779,
             [15, 765, 3],
             "Ni",
-            save_fig=True,
-            path_save=fig_path / "20220331_ni_peak2_fit.png",
         )
         ni_peak_centre_channels.append(ni_peak2_fit[1])
         ni_peak_centre_channel_errs.append(ni_peak2_err[1])
@@ -516,18 +315,31 @@ if __name__ == "__main__":
         ni_peak_centre_channels = np.array(ni_peak_centre_channels)
         ni_peak_centre_channel_errs = np.array(ni_peak_centre_channel_errs)
 
+        ni_calib_fit, ni_calib_err = calib.calib_curve(
+            ni_peak_centre_channels,
+            ni_peak_centre_channel_errs,
+            [7.478, 8.265],
+            [0, 0],
+            "Ni",
+            save_fig=True,
+            path_save=fig_path / "ni_calib_curve.png",
+        )
+
         ni_peak_centre_energies = calib.line(
             np.array(ni_peak_centre_channels),
-            calibration.pb210_calib_fit[0],
-            calibration.pb210_calib_fit[1],
+            ni_calib_fit[0],
+            ni_calib_fit[1],
         )
         ni_peak_centre_energy_errs = np.sqrt(
             ni_peak_centre_energies**2
             * (
-                (calibration.pb210_calib_err[0] / calibration.pb210_calib_fit[0]) ** 2
+                (ni_calib_err[0] / ni_calib_fit[0]) ** 2
                 + (ni_peak_centre_channel_errs / ni_peak_centre_channels) ** 2
             )
-            + calibration.pb210_calib_err[1] ** 2
+            + ni_calib_err[1] ** 2
+        )
+        ni_energies = calib.line(
+            np.array(SDD_channels), ni_calib_fit[0], ni_calib_fit[1],
         )
 
         plt.figure()
@@ -539,14 +351,14 @@ if __name__ == "__main__":
                 + " \pm "
                 + str(round(ni_peak_centre_energy_errs[i], 2))
                 + "$ keV",
-                color="gold",
+                color="darkorange",
             )
-        plt.plot(default_energies, ni_counts, ".", markersize=4)
-        plt.title("Ni XRF Spectrum, Default Setting Calibrated")
+        plt.plot(ni_energies, ni_counts, ".", markersize=4)
+        plt.title("Ni Calibrated")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "ni_spectrum.png")
+        plt.savefig(fig_path / "ni_spectrum_calib.png")
         plt.close()
         # endregion: Ni spectrum calibration
 
@@ -563,8 +375,6 @@ if __name__ == "__main__":
             913,
             [170, 895, 7],
             "Se",
-            save_fig=True,
-            path_save=fig_path / "20220331_se_peak1_fit.png",
         )
         se_peak_centre_channels.append(se_peak1_fit[1])
         se_peak_centre_channel_errs.append(se_peak1_err[1])
@@ -576,8 +386,6 @@ if __name__ == "__main__":
             1013,
             [28, 998, 3.6],
             "Se",
-            save_fig=True,
-            path_save=fig_path / "20220331_se_peak2_fit.png",
         )
         se_peak_centre_channels.append(se_peak2_fit[1])
         se_peak_centre_channel_errs.append(se_peak2_err[1])
@@ -585,18 +393,31 @@ if __name__ == "__main__":
         se_peak_centre_channels = np.array(se_peak_centre_channels)
         se_peak_centre_channel_errs = np.array(se_peak_centre_channel_errs)
 
+        se_calib_fit, se_calib_err = calib.calib_curve(
+            se_peak_centre_channels,
+            se_peak_centre_channel_errs,
+            [11.222, 12.496],
+            [0, 0],
+            "Se",
+            save_fig=True,
+            path_save=fig_path / "se_calib_curve.png",
+        )
+
         se_peak_centre_energies = calib.line(
             np.array(se_peak_centre_channels),
-            calibration.pb210_calib_fit[0],
-            calibration.pb210_calib_fit[1],
+            se_calib_fit[0],
+            se_calib_fit[1],
         )
         se_peak_centre_energy_errs = np.sqrt(
             se_peak_centre_energies**2
             * (
-                (calibration.pb210_calib_err[0] / calibration.pb210_calib_fit[0]) ** 2
+                (se_calib_err[0] / se_calib_fit[0]) ** 2
                 + (se_peak_centre_channel_errs / se_peak_centre_channels) ** 2
             )
-            + calibration.pb210_calib_err[1] ** 2
+            + se_calib_err[1] ** 2
+        )
+        se_energies = calib.line(
+            np.array(SDD_channels), se_calib_fit[0], se_calib_fit[1],
         )
 
         plt.figure()
@@ -608,14 +429,14 @@ if __name__ == "__main__":
                 + " \pm "
                 + str(round(se_peak_centre_energy_errs[i], 2))
                 + "$ keV",
-                color="gold",
+                color="darkorange",
             )
-        plt.plot(default_energies, se_counts, ".", markersize=4)
-        plt.title("Se XRF Spectrum, Default Setting Calibrated")
+        plt.plot(se_energies, se_counts, ".", markersize=4)
+        plt.title("Se Calibrated")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "se_spectrum.png")
+        plt.savefig(fig_path / "se_spectrum_calib.png")
         plt.close()
         # endregion: Se spectrum calibration
 
@@ -632,8 +453,6 @@ if __name__ == "__main__":
             189+3,
             [110, 181, 2.2],
             "Ti",
-            save_fig=True,
-            path_save=fig_path / "20220331_ti_HR_peak1_fit.png",
         )
         ti_HR_peak_centre_channels.append(ti_HR_peak1_fit[1])
         ti_HR_peak_centre_channel_errs.append(ti_HR_peak1_err[1])
@@ -645,40 +464,49 @@ if __name__ == "__main__":
             205+4,
             [17, 198, 1.7],
             "Ti",
-            save_fig=True,
-            path_save=fig_path / "20220331_ti_HR_peak2_fit.png",
         )
         ti_HR_peak_centre_channels.append(ti_HR_peak2_fit[1])
         ti_HR_peak_centre_channel_errs.append(ti_HR_peak2_err[1])
 
-        ti_HR_peak3_fit, ti_HR_peak3_err = calib.fit_peak(
-            SDD_channels,
-            ti_HR_counts,
-            412-15,
-            602,
-            [2, 536, 50],
-            "Ti",
-            save_fig=True,
-            path_save=fig_path / "20220331_ti_HR_peak3_fit.png",
-        )
-        ti_HR_peak_centre_channels.append(ti_HR_peak3_fit[1])
-        ti_HR_peak_centre_channel_errs.append(ti_HR_peak3_err[1])
+        # ti_HR_peak3_fit, ti_HR_peak3_err = calib.fit_peak(
+        #     SDD_channels,
+        #     ti_HR_counts,
+        #     412-15,
+        #     602,
+        #     [2, 536, 50],
+        #     "Ti",
+        # )
+        # ti_HR_peak_centre_channels.append(ti_HR_peak3_fit[1])
+        # ti_HR_peak_centre_channel_errs.append(ti_HR_peak3_err[1])
 
         ti_HR_peak_centre_channels = np.array(ti_HR_peak_centre_channels)
         ti_HR_peak_centre_channel_errs = np.array(ti_HR_peak_centre_channel_errs)
 
+        ti_HR_calib_fit, ti_HR_calib_err = calib.calib_curve(
+            ti_HR_peak_centre_channels,
+            ti_HR_peak_centre_channel_errs,
+            [4.511, 4.932],
+            [0, 0],
+            "Ti",
+            save_fig=True,
+            path_save=fig_path / "ti_HR_calib_curve.png",
+        )
+
         ti_HR_peak_centre_energies = calib.line(
             np.array(ti_HR_peak_centre_channels),
-            calibration.cs137_calib_fit[0],
-            calibration.cs137_calib_fit[1],
+            ti_HR_calib_fit[0],
+            ti_HR_calib_fit[1],
         )
         ti_HR_peak_centre_energy_errs = np.sqrt(
             ti_HR_peak_centre_energies**2
             * (
-                (calibration.pb210_calib_err[0] / calibration.pb210_calib_fit[0]) ** 2
+                (ti_HR_calib_err[0] / ti_HR_calib_fit[0]) ** 2
                 + (ti_HR_peak_centre_channel_errs / ti_HR_peak_centre_channels) ** 2
             )
-            + calibration.pb210_calib_err[1] ** 2
+            + ti_HR_calib_err[1] ** 2
+        )
+        ti_HR_energies = calib.line(
+            np.array(SDD_channels), ti_HR_calib_fit[0], ti_HR_calib_fit[1],
         )
 
         plt.figure()
@@ -690,13 +518,13 @@ if __name__ == "__main__":
                 + " \pm "
                 + str(round(ti_HR_peak_centre_energy_errs[i], 2))
                 + "$ keV",
-                color="gold",
+                color="darkorange",
             )
-        plt.plot(high_rate_energies, ti_HR_counts, ".", markersize=4)
-        plt.title("Ti XRF Spectrum, High Rate Setting Calibrated")
+        plt.plot(ti_HR_energies, ti_HR_counts, ".", markersize=4)
+        plt.title("Ti Calibrated (High Rate Setting)")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "ti_HR_spectrum.png")
+        plt.savefig(fig_path / "ti_HR_spectrum_calib.png")
         plt.close()
         # endregion: Ti high-rate spectrum calibration
