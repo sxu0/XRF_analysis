@@ -12,7 +12,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from xrf import calib
-import calibration
 
 
 metal = ["au", "cu", "pb", "ni", "se", "ti_HR"]
@@ -25,8 +24,6 @@ if __name__ == "__main__":
     fig_path = Path.cwd() / "outputs" / "calib_metals_fit"
 
     SDD_channels = np.arange(0, 2048)
-    default_energies = calibration.energies_default
-    high_rate_energies = calibration.energies_high_rate
 
     if "au" in metal:
         # region: Au spectrum calibration
