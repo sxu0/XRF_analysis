@@ -59,6 +59,7 @@ def fit_peak(
     sample: str,
     save_fig: bool = False,
     path_save: Path = None,
+    show_fig: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Fits a Gaussian to an energy peak, and calculates the peak centre.
     Produces a plot.
@@ -73,6 +74,7 @@ def fit_peak(
         sample (str): Name of sample. Used in plot title.
         save_fig (bool, optional): Whether to save output plot. Defaults to False.
         path_save (Path, optional): Path to save output plot. Defaults to None.
+        show_fig (bool, optional): Whether to show output plot. Defaults to False.
 
     Returns:
         Tuple[np.ndarray, np.ndarray]: Fit parameters and their uncertainties.
@@ -115,7 +117,7 @@ def fit_peak(
     if save_fig:
         plt.savefig(path_save)
         plt.close()
-    else:
+    if show_fig:
         plt.show()
 
     return peak_fit, fit_err
