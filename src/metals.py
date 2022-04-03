@@ -15,7 +15,8 @@ from xrf import calib
 import calibration
 
 
-metal = ["au", "cu", "pb", "ag", "ag_HR", "cd", "ni", "se", "ti_HR"]
+# metal = ["au", "cu", "pb", "ag", "ag_HR", "cd", "ni", "se", "ti_HR"]
+metal = ["cu"]
 
 
 if __name__ == "__main__":
@@ -49,8 +50,8 @@ if __name__ == "__main__":
         au_peak2_fit, au_peak2_err = calib.fit_peak(
             SDD_channels,
             au_counts,
-            901,
-            937,
+            901-5,
+            937+10,
             [34, 919, 7.4],
             "Au",
             save_fig=True,
@@ -62,9 +63,9 @@ if __name__ == "__main__":
         au_peak3_fit, au_peak3_err = calib.fit_peak(
             SDD_channels,
             au_counts,
-            1052,
-            1092,
-            [5, 1069, 0.7],
+            1011,
+            1116,
+            [5, 1069, 15],
             "Au",
             save_fig=True,
             path_save=fig_path / "20220330_au_peak3_fit.png",
@@ -132,7 +133,7 @@ if __name__ == "__main__":
             SDD_channels,
             cu_counts,
             696,
-            724,
+            724+7,
             [17, 711, 3],
             "Cu",
             save_fig=True,
@@ -187,9 +188,9 @@ if __name__ == "__main__":
         pb_peak1_fit, pb_peak1_err = calib.fit_peak(
             SDD_channels,
             pb_counts,
-            726,
-            745,
-            [5, 734, 2],
+            709,
+            755,
+            [5, 734, 5],
             "Pb",
             save_fig=True,
             path_save=fig_path / "20220330_pb_peak1_fit.png",
@@ -214,8 +215,8 @@ if __name__ == "__main__":
             SDD_channels,
             pb_counts,
             990,
-            1019,
-            [25, 1007, 2.3],
+            1054,
+            [25, 1007, 8],
             "Pb",
             save_fig=True,
             path_save=fig_path / "20220330_pb_peak3_fit.png",
@@ -269,9 +270,9 @@ if __name__ == "__main__":
         ag_peak1_fit, ag_peak1_err = calib.fit_peak(
             SDD_channels,
             ag_counts,
-            235,
-            264,
-            [3, 247, 10],
+            216,
+            283,
+            [5, 247, 14],
             "Ag",
             save_fig=True,
             path_save=fig_path / "20220331_ag_peak1_fit.png",
@@ -283,8 +284,8 @@ if __name__ == "__main__":
             SDD_channels,
             ag_counts,
             798,
-            1205,
-            [11, 1051, 200],
+            1190,
+            [11, 1110, 70],
             "Ag",
             save_fig=True,
             path_save=fig_path / "20220331_ag_peak2_fit.png",
@@ -338,8 +339,8 @@ if __name__ == "__main__":
         ag_HR_peak1_fit, ag_HR_peak1_err = calib.fit_peak(
             SDD_channels,
             ag_HR_counts,
-            116,
-            138,
+            116-7,
+            138+15,
             [9, 125, 9],
             "Ag",
             save_fig=True,
@@ -407,8 +408,8 @@ if __name__ == "__main__":
         cd_peak1_fit, cd_peak1_err = calib.fit_peak(
             SDD_channels,
             cd_counts,
-            245,
-            278,
+            217,
+            330,
             [7, 260, 18],
             "Cd",
             save_fig=True,
@@ -420,8 +421,8 @@ if __name__ == "__main__":
         cd_peak2_fit, cd_peak2_err = calib.fit_peak(
             SDD_channels,
             cd_counts,
-            683,
-            700,
+            675,
+            709,
             [11, 694, 10],
             "Cd",
             save_fig=True,
@@ -627,8 +628,8 @@ if __name__ == "__main__":
         ti_HR_peak1_fit, ti_HR_peak1_err = calib.fit_peak(
             SDD_channels,
             ti_HR_counts,
-            175,
-            189,
+            175-3,
+            189+3,
             [110, 181, 2.2],
             "Ti",
             save_fig=True,
@@ -640,8 +641,8 @@ if __name__ == "__main__":
         ti_HR_peak2_fit, ti_HR_peak2_err = calib.fit_peak(
             SDD_channels,
             ti_HR_counts,
-            193,
-            205,
+            193-4,
+            205+4,
             [17, 198, 1.7],
             "Ti",
             save_fig=True,
@@ -653,7 +654,7 @@ if __name__ == "__main__":
         ti_HR_peak3_fit, ti_HR_peak3_err = calib.fit_peak(
             SDD_channels,
             ti_HR_counts,
-            412,
+            412-15,
             602,
             [2, 536, 50],
             "Ti",
