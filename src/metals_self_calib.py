@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from xrf import calib
-from calibration import (pb210_calib_fit, cs137_calib_fit)
+from calibration import (energies_default, energies_high_rate)
 
 
 save_plots = False
@@ -564,7 +564,7 @@ if __name__ == "__main__":
                 k = 1
             calib_curves[metal[i]] = {}
             calib_curves[metal[i]]["fit"] = locals()[metal[i] + "_calib_fit"]
-            calib_curves[metal[i]]["fit"][0] *= k  # scale high energy by 1/2
+            calib_curves[metal[i]]["fit"][0] *= k  # scale high rate energy by 1/2
             calib_curves[metal[i]]["err"] = locals()[metal[i] + "_calib_err"]
             energies = calib.line(
                 SDD_channels,
@@ -572,10 +572,16 @@ if __name__ == "__main__":
                 calib_curves[metal[i]]["fit"][1],
             )
             plt.plot(
-                SDD_channels, energies, linewidth=0.8, label=metal[i][:2].capitalize()
+                SDD_channels, energies, linewidth=0.8, label=metal[i][:2].capitalize(),
             )
+        plt.plot(
+            SDD_channels, energies_default, '--', linewidth=0.8, label="Pb-210",
+        )
+        plt.plot(
+            SDD_channels, 0.5 * energies_high_rate, '--', linewidth=0.8, label="Cs-137",
+        )
         plt.style.use("seaborn")
-        plt.title("Metal Calibration Curves, by Element")
+        plt.title("Metal Calibration Curves, by Element/Isotope")
         plt.xlabel("Channel $N$")
         plt.ylabel("Energy $E$ (keV)")
         plt.legend()
