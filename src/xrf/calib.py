@@ -121,6 +121,8 @@ def fit_peak(
         plt.close()
     if show_fig:
         plt.show()
+    else:
+        plt.close()
 
     return peak_fit, fit_err
 
@@ -133,6 +135,7 @@ def calib_curve(
     sample: str,
     save_fig: bool = False,
     path_save: Path = None,
+    show_fig: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Produce a calibration curve given peak locations and test known energies
     from literature.
@@ -144,6 +147,7 @@ def calib_curve(
         sample (str): Name of sample used for calibration. Used in plot title.
         save_fig (bool, optional): Whether to save output plot. Defaults to False.
         path_save (Path, optional): Path to save output plot. Defaults to None.
+        show_fig (bool, optional): Whether to show output plot. Defaults to False.
 
     Returns:
         Tuple[np.ndarray, np.ndarray]: Linear fit parameters and their uncertainties.
@@ -194,7 +198,9 @@ def calib_curve(
     if save_fig:
         plt.savefig(path_save)
         plt.close()
-    else:
+    if show_fig:
         plt.show()
+    else:
+        plt.close()
 
     return calib_fit, calib_err

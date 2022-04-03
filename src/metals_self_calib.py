@@ -12,8 +12,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from xrf import calib
+from calibration import (pb210_calib_fit, cs137_calib_fit)
 
 
+save_plots = False
 metal = ["au", "cu", "pb", "ni", "se", "ti_HR"]
 # metal = ["ti_HR"]
 
@@ -21,7 +23,7 @@ metal = ["au", "cu", "pb", "ni", "se", "ti_HR"]
 if __name__ == "__main__":
 
     data_path = Path.cwd() / "data"
-    fig_path = Path.cwd() / "outputs" / "calib_metals_fit"
+    fig_path = Path.cwd() / "outputs" / "calib_metals_self"
 
     SDD_channels = np.arange(0, 2048)
 
@@ -73,7 +75,7 @@ if __name__ == "__main__":
             [9.705, 11.432, 13.383],
             [0, 0],
             "Au",
-            save_fig=True,
+            save_fig=save_plots,
             path_save=fig_path / "au_calib_curve.png",
         )
 
@@ -112,7 +114,8 @@ if __name__ == "__main__":
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "au_spectrum_calib.png")
+        if save_plots:
+            plt.savefig(fig_path / "au_spectrum_calib.png")
         plt.close()
         # endregion: Au spectrum calibration
 
@@ -153,7 +156,7 @@ if __name__ == "__main__":
             [8.048, 8.905],
             [0, 0],
             "Cu",
-            save_fig=True,
+            save_fig=save_plots,
             path_save=fig_path / "cu_calib_curve.png",
         )
 
@@ -192,7 +195,8 @@ if __name__ == "__main__":
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "cu_spectrum_calib.png")
+        if save_plots:
+            plt.savefig(fig_path / "cu_spectrum_calib.png")
         plt.close()
         # endregion: Cu spectrum calibration
 
@@ -244,7 +248,7 @@ if __name__ == "__main__":
             [9.185, 10.555, 12.618],
             [0, 0],
             "Pb",
-            save_fig=True,
+            save_fig=save_plots,
             path_save=fig_path / "pb_calib_curve.png",
         )
 
@@ -283,7 +287,8 @@ if __name__ == "__main__":
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "pb_spectrum_calib.png")
+        if save_plots:
+            plt.savefig(fig_path / "pb_spectrum_calib.png")
         plt.close()
         # endregion: Pb spectrum calibration
 
@@ -324,7 +329,7 @@ if __name__ == "__main__":
             [7.478, 8.265],
             [0, 0],
             "Ni",
-            save_fig=True,
+            save_fig=save_plots,
             path_save=fig_path / "ni_calib_curve.png",
         )
 
@@ -363,7 +368,8 @@ if __name__ == "__main__":
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "ni_spectrum_calib.png")
+        if save_plots:
+            plt.savefig(fig_path / "ni_spectrum_calib.png")
         plt.close()
         # endregion: Ni spectrum calibration
 
@@ -404,7 +410,7 @@ if __name__ == "__main__":
             [11.222, 12.496],
             [0, 0],
             "Se",
-            save_fig=True,
+            save_fig=save_plots,
             path_save=fig_path / "se_calib_curve.png",
         )
 
@@ -443,7 +449,8 @@ if __name__ == "__main__":
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "se_spectrum_calib.png")
+        if save_plots:
+            plt.savefig(fig_path / "se_spectrum_calib.png")
         plt.close()
         # endregion: Se spectrum calibration
 
@@ -495,7 +502,7 @@ if __name__ == "__main__":
             [4.511, 4.932],
             [0, 0],
             "Ti",
-            save_fig=True,
+            save_fig=save_plots,
             path_save=fig_path / "ti_HR_calib_curve.png",
         )
 
@@ -534,6 +541,45 @@ if __name__ == "__main__":
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
-        plt.savefig(fig_path / "ti_HR_spectrum_calib.png")
+        if save_plots:
+            plt.savefig(fig_path / "ti_HR_spectrum_calib.png")
         plt.close()
         # endregion: Ti high-rate spectrum calibration
+
+    if (
+        ("au" in metal) and
+        ("cu" in metal) and
+        ("pb" in metal) and
+        ("ni" in metal) and
+        ("se" in metal) and
+        ("ti_HR" in metal)
+    ):
+        # region: overlay calibration curves
+        plt.figure()
+        calib_curves = {}
+        for i in range(len(metal)):
+            if "_HR" in metal[i]:
+                k = 0.5
+            else:
+                k = 1
+            calib_curves[metal[i]] = {}
+            calib_curves[metal[i]]["fit"] = locals()[metal[i] + "_calib_fit"]
+            calib_curves[metal[i]]["fit"][0] *= k  # scale high energy by 1/2
+            calib_curves[metal[i]]["err"] = locals()[metal[i] + "_calib_err"]
+            energies = calib.line(
+                SDD_channels,
+                calib_curves[metal[i]]["fit"][0],
+                calib_curves[metal[i]]["fit"][1],
+            )
+            plt.plot(
+                SDD_channels, energies, linewidth=0.8, label=metal[i][:2].capitalize()
+            )
+        plt.style.use("seaborn")
+        plt.title("Metal Calibration Curves, by Element")
+        plt.xlabel("Channel $N$")
+        plt.ylabel("Energy $E$ (keV)")
+        plt.legend()
+        if save_plots:
+            plt.savefig(fig_path / "metal_calib_curves.png")
+        plt.close()
+        # endregion: overlay calibration curves
