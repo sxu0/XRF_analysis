@@ -600,18 +600,23 @@ def main():
 
         ## compute avg calibration curve
         calib_intercepts, calib_slopes = [], []
-        avg_calib_intercept_err, avg_calib_slope_err = 0, 0
+        calib_intercept_errs, calib_slope_errs = [], []
         for sample in calib_curves:
             if sample == "Ni":
                 continue
             calib_slopes.append(calib_curves[sample]["fit"][0])
             calib_intercepts.append(calib_curves[sample]["fit"][1])
-            avg_calib_slope_err += calib_curves[sample]["err"][0] ** 2
-            avg_calib_intercept_err += calib_curves[sample]["err"][1] ** 2
+            calib_slope_errs.append(calib_curves[sample]["err"][0])
+            calib_intercept_errs.append(calib_curves[sample]["err"][1])
+        for i in range(len(calib_curves.keys())):
+            if calib_slope_errs[i] == np.inf:
+                calib_slope_errs[i] = 0
+            if calib_intercept_errs[i] == np.inf:
+                calib_intercept_errs[i] = 0
         avg_calib_slope = np.average(np.array(calib_slopes))
         avg_calib_intercept = np.average(np.array(calib_intercepts))
-        avg_calib_slope_err **= 0.5
-        avg_calib_intercept_err **= 0.5
+        avg_calib_slope_err = np.sum(np.array(calib_slope_errs) ** 2) ** 0.5
+        avg_calib_intercept_err = np.sum(np.array(calib_intercept_errs)) ** 0.5
 
         avg_calib_energies = calib.line(
             SDD_channels, avg_calib_slope, avg_calib_intercept
