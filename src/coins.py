@@ -35,6 +35,8 @@ if __name__ == "__main__":
 
     SDD_channels = np.arange(0, 2048)
 
+    plt.style.use("default")
+
     if "CN_new" in coin:
         # region: identifying peak energies for 2000s_chinese_dime
         CN_new_counts = calib.read_data(data_path / "20220401_2000s_chinese_dime.csv")
@@ -56,8 +58,8 @@ if __name__ == "__main__":
         CN_new_peak2_fit, CN_new_peak2_err = calib.fit_peak(
             SDD_channels,
             CN_new_counts,
-            463 - 25,
-            488 + 25,
+            463 - 15,
+            488 + 7,
             [20, 476, 50],
             "CN_new",
             show_fig=True,
@@ -80,7 +82,7 @@ if __name__ == "__main__":
         CN_new_peak4_fit, CN_new_peak4_err = calib.fit_peak(
             SDD_channels,
             CN_new_counts,
-            548 - 25,
+            548 - 15,
             580 + 25,
             [110, 565, 60],
             "CN_new",
@@ -136,7 +138,7 @@ if "CN_old" in coin:
         CN_old_peak1_fit, CN_old_peak1_err = calib.fit_peak(
             SDD_channels,
             CN_old_counts,
-            499 - 25,
+            499 - 20,
             521 + 25,
             [10, 512, 40],
             "CN_old",
@@ -149,7 +151,7 @@ if "CN_old" in coin:
             SDD_channels,
             CN_old_counts,
             625 - 25,
-            660 + 25,
+            660 + 20,
             [400, 643, 60],
             "CN_old",
             show_fig=True,
@@ -160,8 +162,8 @@ if "CN_old" in coin:
         CN_old_peak3_fit, CN_old_peak3_err = calib.fit_peak(
             SDD_channels,
             CN_old_counts,
-            673 - 25,
-            704 + 5,
+            673 - 15,
+            704,
             [312, 690, 50],
             "CN_old",
             show_fig=True,
@@ -172,7 +174,7 @@ if "CN_old" in coin:
         CN_old_peak4_fit, CN_old_peak4_err = calib.fit_peak(
             SDD_channels,
             CN_old_counts,
-            705 - 5,
+            705,
             725 + 25,
             [60, 713, 50],
             "CN_old",
@@ -184,7 +186,7 @@ if "CN_old" in coin:
         CN_old_peak5_fit, CN_old_peak5_err = calib.fit_peak(
             SDD_channels,
             CN_old_counts,
-            750 - 25,
+            750 - 15,
             780 + 25,
             [30, 766, 40],
             "CN_old",
