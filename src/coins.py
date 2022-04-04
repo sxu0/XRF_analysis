@@ -23,7 +23,7 @@ coins = {
     "CA_new": "1964_canadian_quarter",
 }
 # coin = list(coins.keys())
-coin = ["CN_old", "CN_new", "CA_new"]
+coin = ["CA_old"]
 
 save_plots = True
 
@@ -236,7 +236,7 @@ if __name__ == "__main__":
                 color="orange",
             )
         plt.plot(avg_calib_curve[4], CN_old_counts, ".", markersize=4)
-        plt.title("16th-Century Chinese Dime, Calibrated")
+        plt.title("17th-Century Chinese Dime, Calibrated")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Count")
         plt.legend()
@@ -348,3 +348,95 @@ if __name__ == "__main__":
             plt.savefig(fig_path / "CA_new_spectrum_calib.png")
         plt.close()
         # endregion: identifying peak energies for 1964_canadian_quarter
+
+    if "CA_old" in coin:
+        # region: identifying peak energies for 1800s_canadian_coin
+        CA_old_counts = calib.read_data(data_path / "20220401_1800s_canadian_coin.csv")
+        CA_old_peak_centre_channels = []
+        CA_old_peak_centre_channel_errs = []
+
+        CA_old_peak1_fit, CA_old_peak1_err = calib.fit_peak(
+            SDD_channels,
+            CA_old_counts,
+            620 - 25,
+            662 + 25,
+            [710, 643, 60],
+            "CA_old",
+            show_fig=True,
+        )
+        CA_old_peak_centre_channels.append(CA_old_peak1_fit[1])
+        CA_old_peak_centre_channel_errs.append(CA_old_peak1_err[1])
+
+        CA_old_peak2_fit, CA_old_peak2_err = calib.fit_peak(
+            SDD_channels,
+            CA_old_counts,
+            674 - 10,
+            703,
+            [100, 691, 60],
+            "CA_old",
+            show_fig=True,
+        )
+        CA_old_peak_centre_channels.append(CA_old_peak2_fit[1])
+        CA_old_peak_centre_channel_errs.append(CA_old_peak2_err[1])
+
+        CA_old_peak3_fit, CA_old_peak3_err = calib.fit_peak(
+            SDD_channels,
+            CA_old_counts,
+            703,
+            729 + 25,
+            [100, 712, 50],
+            "CA_old",
+            show_fig=True,
+        )
+        CA_old_peak_centre_channels.append(CA_old_peak3_fit[1])
+        CA_old_peak_centre_channel_errs.append(CA_old_peak3_err[1])
+
+        CA_old_peak4_fit, CA_old_peak4_err = calib.fit_peak(
+            SDD_channels,
+            CA_old_counts,
+            754 - 25,
+            780 + 35,
+            [10, 765, 50],
+            "CA_old",
+            show_fig=True,
+        )
+        CA_old_peak_centre_channels.append(CA_old_peak4_fit[1])
+        CA_old_peak_centre_channel_errs.append(CA_old_peak4_err[1])
+
+        CA_old_peak_centre_channels = np.array(CA_old_peak_centre_channels)
+        CA_old_peak_centre_channel_errs = np.array(CA_old_peak_centre_channel_errs)
+
+        CA_old_peak_centre_energies = calib.line(
+            np.array(CA_old_peak_centre_channels),
+            avg_calib_curve[0],
+            avg_calib_curve[1],
+        )
+        CA_old_peak_centre_energy_errs = np.sqrt(
+            CA_old_peak_centre_energies**2
+            * (
+                (avg_calib_curve[2] / avg_calib_curve[0]) ** 2
+                + (CA_old_peak_centre_channel_errs / CA_old_peak_centre_channels) ** 2
+            )
+            + avg_calib_curve[3] ** 2
+        )
+
+        plt.figure()
+        for i in range(len(CA_old_peak_centre_energies)):
+            plt.axvline(
+                x=CA_old_peak_centre_energies[i],
+                label="$E = "
+                + str(round(CA_old_peak_centre_energies[i], 2))
+                + " \pm "
+                + str(round(CA_old_peak_centre_energy_errs[i], 2))
+                + "$ keV",
+                color="orange",
+            )
+        plt.plot(avg_calib_curve[4], CA_old_counts, ".", markersize=4)
+        plt.title("19th-Century Canadian Coin, Calibrated")
+        plt.xlabel("Energy (keV)")
+        plt.ylabel("Count")
+        plt.legend()
+        if save_plots:
+            plt.savefig(fig_path / "CA_old_spectrum_calib.png")
+        plt.close()
+        # endregion: identifying peak energies for 1800s_canadian_coin
