@@ -23,7 +23,7 @@ coins = {
     "CA_new": "1964_canadian_quarter",
 }
 # coin = list(coins.keys())
-coin = ["CN_new", "CN_old"]
+coin = ["CN_old", "CN_new", "CA_new"]
 
 save_plots = True
 
@@ -129,7 +129,7 @@ if __name__ == "__main__":
         plt.close()
         # endregion: identifying peak energies for 2000s_chinese_dime
 
-if "CN_old" in coin:
+    if "CN_old" in coin:
         # region: identifying peak energies for 1600s_chinese_coin
         CN_old_counts = calib.read_data(data_path / "20220401_1600s_chinese_coin.csv")
         CN_old_peak_centre_channels = []
@@ -245,3 +245,106 @@ if "CN_old" in coin:
         plt.close()
         # endregion: identifying peak energies for 1600s_chinese_coin
 
+    if "CA_new" in coin:
+        # region: identifying peak energies for 1964_canadian_quarter
+        CA_new_counts = calib.read_data(data_path / "20220401_1964_canadian_quarter.csv")
+        CA_new_peak_centre_channels = []
+        CA_new_peak_centre_channel_errs = []
+
+        CA_new_peak1_fit, CA_new_peak1_err = calib.fit_peak(
+            SDD_channels,
+            CA_new_counts,
+            103 - 20,
+            145 + 20,
+            [2, 120, 10],
+            "CA_new",
+            show_fig=True,
+        )
+        CA_new_peak_centre_channels.append(CA_new_peak1_fit[1])
+        CA_new_peak_centre_channel_errs.append(CA_new_peak1_err[1])
+
+        CA_new_peak2_fit, CA_new_peak2_err = calib.fit_peak(
+            SDD_channels,
+            CA_new_counts,
+            313 - 25,
+            331 + 25,
+            [60, 323, 10],
+            "CA_new",
+            show_fig=True,
+        )
+        CA_new_peak_centre_channels.append(CA_new_peak2_fit[1])
+        CA_new_peak_centre_channel_errs.append(CA_new_peak2_err[1])
+
+        CA_new_peak3_fit, CA_new_peak3_err = calib.fit_peak(
+            SDD_channels,
+            CA_new_counts,
+            349 - 18,
+            365 + 25,
+            [13, 357, 10],
+            "CA_new",
+            show_fig=True,
+        )
+        CA_new_peak_centre_channels.append(CA_new_peak3_fit[1])
+        CA_new_peak_centre_channel_errs.append(CA_new_peak3_err[1])
+
+        CA_new_peak4_fit, CA_new_peak4_err = calib.fit_peak(
+            SDD_channels,
+            CA_new_counts,
+            490,
+            546,
+            [5, 515, 15],
+            "CA_new",
+            show_fig=True,
+        )
+        CA_new_peak_centre_channels.append(CA_new_peak4_fit[1])
+        CA_new_peak_centre_channel_errs.append(CA_new_peak4_err[1])
+
+        CA_new_peak5_fit, CA_new_peak5_err = calib.fit_peak(
+            SDD_channels,
+            CA_new_counts,
+            541,
+            600,
+            [5, 515, 15],
+            "CA_new",
+            show_fig=True,
+        )
+        CA_new_peak_centre_channels.append(CA_new_peak5_fit[1])
+        CA_new_peak_centre_channel_errs.append(CA_new_peak5_err[1])
+
+        CA_new_peak_centre_channels = np.array(CA_new_peak_centre_channels)
+        CA_new_peak_centre_channel_errs = np.array(CA_new_peak_centre_channel_errs)
+
+        CA_new_peak_centre_energies = calib.line(
+            np.array(CA_new_peak_centre_channels),
+            avg_calib_curve[0],
+            avg_calib_curve[1],
+        )
+        CA_new_peak_centre_energy_errs = np.sqrt(
+            CA_new_peak_centre_energies**2
+            * (
+                (avg_calib_curve[2] / avg_calib_curve[0]) ** 2
+                + (CA_new_peak_centre_channel_errs / CA_new_peak_centre_channels) ** 2
+            )
+            + avg_calib_curve[3] ** 2
+        )
+
+        plt.figure()
+        for i in range(len(CA_new_peak_centre_energies)):
+            plt.axvline(
+                x=CA_new_peak_centre_energies[i],
+                label="$E = "
+                + str(round(CA_new_peak_centre_energies[i], 2))
+                + " \pm "
+                + str(round(CA_new_peak_centre_energy_errs[i], 2))
+                + "$ keV",
+                color="orange",
+            )
+        plt.plot(avg_calib_curve[4], CA_new_counts, ".", markersize=4)
+        plt.title("1964 Canadian Quarter, Calibrated")
+        plt.xlabel("Energy (keV)")
+        plt.ylabel("Count")
+        plt.legend()
+        if save_plots:
+            plt.savefig(fig_path / "CA_new_spectrum_calib.png")
+        plt.close()
+        # endregion: identifying peak energies for 1964_canadian_quarter
