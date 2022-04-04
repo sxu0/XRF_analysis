@@ -22,9 +22,9 @@ mode = ["default", "high_rate"]
 
 data_path = Path.cwd() / "data"
 fig_path = Path.cwd() / "outputs" / "calib_radioactive"
-# fig_path = Path.cwd() / "outputs" / "calib2_radioactive"
 
 SDD_channels = np.arange(0, 2048)
+
 
 if "default" in mode:
     # region: calibration of FastSDD Default PX5 setting
@@ -95,8 +95,7 @@ if "default" in mode:
             12.305,
             12.618,
             15.222,
-        ],  # trial 1, saved under /outputs/calib_radioactive/
-        # [],  # trial 2, saved under /outputs/calib2_radioactive/
+        ],
         [0, 0],
         "Pb-210",
         save_fig=True,
@@ -152,8 +151,7 @@ if "high_rate" in mode:
     cs137_calib_fit, cs137_calib_err = calib.calib_curve(
         cs137_peak_centres,
         cs137_peak_centre_errs,
-        [30.973, 34.985],  # trial 1, saved under /outputs/calib_radioactive/
-        # [30.973, 34.918],  # trial 2, saved under /outputs/calib2_radioactive/
+        [30.973, 34.985],
         [0, 0],
         "Cs-137",
         save_fig=True,
