@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from xrf import calib
-from calibration import (energies_default, energies_high_rate)
+import calibration
 
 
 save_plots = False
@@ -20,7 +20,7 @@ metal = ["au", "cu", "pb", "ni", "se", "ti_HR"]
 # metal = ["ti_HR"]
 
 
-if __name__ == "__main__":
+def main():
 
     data_path = Path.cwd() / "data"
     fig_path = Path.cwd() / "outputs" / "calib_metals_self"
@@ -572,14 +572,57 @@ if __name__ == "__main__":
                 calib_curves[metal[i]]["fit"][1],
             )
             plt.plot(
-                SDD_channels, energies, linewidth=0.8, label=metal[i][:2].capitalize(),
+                SDD_channels,
+                energies,
+                linewidth=0.8,
+                label=metal[i][:2].capitalize(),
             )
+
         plt.plot(
-            SDD_channels, energies_default, '--', linewidth=0.8, label="Pb-210",
+            SDD_channels,
+            calibration.energies_default,
+            '--', linewidth=0.8,
+            label="Pb-210",
         )
         plt.plot(
-            SDD_channels, 0.5 * energies_high_rate, '--', linewidth=0.8, label="Cs-137",
+            SDD_channels,
+            0.5 * calibration.energies_high_rate,
+            '--', linewidth=0.8,
+            label="Cs-137",
         )
+        calib_curves["Pb-210"] = {}
+        calib_curves["Pb-210"]["fit"] = calibration.pb210_calib_fit
+        calib_curves["Pb-210"]["err"] = calibration.pb210_calib_err
+        calib_curves["Cs-137"] = {}
+        calib_curves["Cs-137"]["fit"] = calibration.cs137_calib_fit
+        calib_curves["Cs-137"]["fit"][0] *= 0.5  # account for high rate gain
+        calib_curves["Cs-137"]["err"] = calibration.cs137_calib_err
+
+        ## compute avg calibration curve
+        calib_intercepts, calib_slopes = [], []
+        avg_calib_intercept_err, avg_calib_slope_err = 0, 0
+        for sample in calib_curves:
+            if sample == "Ni":
+                continue
+            calib_slopes.append(calib_curves[sample]["fit"][0])
+            calib_intercepts.append(calib_curves[sample]["fit"][1])
+            avg_calib_slope_err += calib_curves[sample]["err"][0] ** 2
+            avg_calib_intercept_err += calib_curves[sample]["err"][1] ** 2
+        avg_calib_slope = np.average(np.array(calib_slopes))
+        avg_calib_intercept = np.average(np.array(calib_intercepts))
+        avg_calib_slope_err **= 0.5
+        avg_calib_intercept_err **= 0.5
+
+        avg_calib_energies = calib.line(
+            SDD_channels, avg_calib_slope, avg_calib_intercept
+        )
+        plt.plot(
+            SDD_channels,
+            avg_calib_energies,
+            ':', linewidth=1.5,
+            label="AVG (excl. Ni)",
+        )
+
         plt.style.use("seaborn")
         plt.title("Metal Calibration Curves, by Element/Isotope")
         plt.xlabel("Channel $N$")
@@ -589,3 +632,15 @@ if __name__ == "__main__":
             plt.savefig(fig_path / "metal_calib_curves.png")
         plt.close()
         # endregion: overlay calibration curves
+    
+    return (
+        avg_calib_slope,
+        avg_calib_intercept,
+        avg_calib_slope_err,
+        avg_calib_intercept_err,
+    )
+
+
+# if __name__ == "__main__":
+
+avg_calib_curve = main()
