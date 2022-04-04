@@ -638,6 +638,7 @@ def main():
         avg_calib_intercept,
         avg_calib_slope_err,
         avg_calib_intercept_err,
+        avg_calib_energies,
     )
 
 
