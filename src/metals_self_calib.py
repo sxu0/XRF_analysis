@@ -628,6 +628,23 @@ def main():
             label="AVG (excl. Ni)",
         )
 
+        plt.text(
+            550,
+            73,
+            "$E = ("
+            + str(round(avg_calib_slope, 8))
+            + " \pm "
+            + str(round(avg_calib_slope_err, 8))
+            + ") N + ("
+            + str(round(avg_calib_intercept, 4))
+            + " \pm "
+            + str(round(avg_calib_intercept_err, 4))
+            + ")$",
+            ha="right",
+            va="bottom",
+            transform=None,
+        )
+
         plt.style.use("seaborn")
         plt.title("Metal Calibration Curves, by Element/Isotope")
         plt.xlabel("Channel $N$")
